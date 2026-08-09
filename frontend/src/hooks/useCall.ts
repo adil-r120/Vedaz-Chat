@@ -96,7 +96,7 @@ export function useCall({ username }: UseCallProps): CallHookReturn {
   }, []);
 
   const cleanup = useCallback(() => {
-    for (const [peer, pc] of peersRef.current.entries()) {
+    for (const pc of peersRef.current.values()) {
       pc.close();
     }
     peersRef.current.clear();

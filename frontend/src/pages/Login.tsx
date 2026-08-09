@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 /* ── Inline SVG logo ──────────────────────────────────────────────────────── */
 const VedazLogo = () => (

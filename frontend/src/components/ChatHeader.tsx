@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { LogOut, Phone, Video, ChevronDown, Users, PhoneOutgoing } from 'lucide-react';
+import React from 'react';
+import { LogOut, Phone, Video } from 'lucide-react';
 import type { CallType } from '../types/call';
 
 interface ChatHeaderProps {
@@ -10,7 +10,6 @@ interface ChatHeaderProps {
   callState: string;
   onStartCall: (targetUser: string, type: CallType) => void;
   onJoinGroupCall: (type: CallType) => void;
-  groupParticipantsList: string[];
 }
 
 /* ── Inline SVG logo ──────────────────────────────────────────────────────── */
@@ -48,24 +47,9 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
   callState,
   onStartCall,
   onJoinGroupCall,
-  groupParticipantsList,
 }) => {
-  const [open, setOpen] = useState(false);
-  const dropRef = useRef<HTMLDivElement>(null);
-  const isInCall = callState !== 'idle';
   const others = onlineUsers.filter((u) => u !== username);
-  const groupCount = groupParticipantsList.length;
-
-  /* close dropdown on outside click */
-  useEffect(() => {
-    const fn = (e: MouseEvent) => {
-      if (dropRef.current && !dropRef.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener('mousedown', fn);
-    return () => document.removeEventListener('mousedown', fn);
-  }, []);
-
-  const call = (user: string, type: CallType) => { setOpen(false); onStartCall(user, type); };
+  const isInCall = callState !== 'idle';
 
   return (
     <div

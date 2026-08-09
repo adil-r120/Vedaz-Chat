@@ -1,21 +1,15 @@
 import React from 'react';
-import { Users, Phone, Video } from 'lucide-react';
-import type { CallType } from '../types/call';
+import { Users } from 'lucide-react';
 
 interface OnlineUsersProps {
   users: string[];
   currentUser: string;
-  callState: string;
-  onStartCall: (targetUser: string, type: CallType) => void;
 }
 
 export const OnlineUsers: React.FC<OnlineUsersProps> = ({
   users,
   currentUser,
-  callState,
-  onStartCall,
 }) => {
-  const isInCall = callState !== 'idle';
 
   return (
     <div className="w-64 bg-white/60 backdrop-blur-md border-l border-white/50 hidden lg:flex flex-col z-10 shadow-[-10px_0_30px_-15px_rgba(0,0,0,0.05)]">

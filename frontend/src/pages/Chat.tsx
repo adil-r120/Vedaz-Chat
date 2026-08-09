@@ -120,7 +120,6 @@ export const Chat: React.FC<ChatProps> = ({ username, onLogout }) => {
             callState={callHook.callState}
             onStartCall={callHook.startCall}
             onJoinGroupCall={callHook.joinGroupCall}
-            groupParticipantsList={callHook.groupParticipantsList}
           />
         </div>
 
@@ -175,8 +174,6 @@ export const Chat: React.FC<ChatProps> = ({ username, onLogout }) => {
           <OnlineUsers
             users={onlineUsers}
             currentUser={username}
-            callState={callHook.callState}
-            onStartCall={callHook.startCall}
           />
         </div>
       </div>
