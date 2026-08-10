@@ -68,7 +68,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-2 ml-1">
-                Create Your Chatroom name
+                Create your Chatroom Name
               </label>
               <div className="relative">
                 <input
