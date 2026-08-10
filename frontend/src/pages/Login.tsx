@@ -58,7 +58,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
             <VedazLogo />
           </div>
           
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Vedaz</h1>
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Vedaz Chat</h1>
           <p className="text-gray-500 flex items-center justify-center gap-2">
             Let's Discuss as a Team
           </p>

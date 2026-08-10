@@ -61,7 +61,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
         <VedazLogo />
         <div className="hidden sm:block" style={{ minWidth: 0 }}>
-          <p style={{ margin: 0, fontWeight: 800, fontSize: '16px', color: '#111827', lineHeight: 1.2 }}>Vedaz</p>
+          <p style={{ margin: 0, fontWeight: 800, fontSize: '16px', color: '#111827', lineHeight: 1.2 }}>Vedaz Chat</p>
           <p style={{ margin: 0, fontSize: '11px', color: '#9ca3af', lineHeight: 1.2 }}>Let's Talk</p>
         </div>
       </div>

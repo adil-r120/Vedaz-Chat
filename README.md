@@ -1,4 +1,4 @@
-# Vedaz
+# Vedaz Chat
 
 > A real-time web chat application featuring global messaging, online presence, and seamless 1-on-1 & group audio/video calls, accessible by simply creating a single Room Code.
 
@@ -36,8 +36,8 @@
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/adil-r120/Vedaz.git
-   cd Vedaz
+   git clone https://github.com/adil-r120/Vedaz-Chat.git
+   cd Vedaz-Chat
    ```
 
 2. **Install and run the Backend:**
