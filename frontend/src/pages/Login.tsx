@@ -68,7 +68,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-2 ml-1">
-                Create a Chatroom Code
+                Create Your Chatroom name
               </label>
               <div className="relative">
                 <input
@@ -82,7 +82,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   className={`w-full pl-5 pr-4 py-4 rounded-2xl border-2 ${
                     error ? 'border-red-400 focus:ring-red-500' : 'border-white/50 focus:border-blue-500/50'
                   } bg-white/80 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all text-gray-900 placeholder-gray-400 shadow-sm`}
-                  placeholder="e.g. Adil / 123..."
+                  placeholder="e.g. Xyz... / 123..."
                 />
               </div>
               {error && <p className="mt-2 text-sm text-red-500 ml-1 font-medium">{error}</p>}
