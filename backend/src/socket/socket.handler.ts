@@ -73,6 +73,32 @@ export const setupSocketHandlers = (io: Server) => {
       }
     });
 
+    // ── Chat: Edit message ───────────────────────────────────────────────────
+    socket.on('message:edit', async (data: { messageId: string; newMessage: string }) => {
+      try {
+        const updatedMsg = await Message.findByIdAndUpdate(
+          data.messageId, 
+          { message: data.newMessage },
+          { new: true }
+        );
+        if (updatedMsg) {
+          io.emit('message:edited', { messageId: data.messageId, newMessage: data.newMessage });
+        }
+      } catch (error) {
+        console.error('Error editing message');
+      }
+    });
+
+    // ── Chat: Delete message ─────────────────────────────────────────────────
+    socket.on('message:delete', async (messageId: string) => {
+      try {
+        await Message.findByIdAndDelete(messageId);
+        io.emit('message:deleted', messageId);
+      } catch (error) {
+        console.error('Error deleting message');
+      }
+    });
+
     // ═════════════════════════════════════════════════════════════════════════
     // ── 1-ON-1 CALLING ───────────────────────────────────────────────────────
     // ═════════════════════════════════════════════════════════════════════════

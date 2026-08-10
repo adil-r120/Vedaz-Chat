@@ -5,8 +5,9 @@
 ## Features
 
 - **Instant Messaging**: Real-time communication powered by Socket.io, with history persisted via MongoDB.
+- **Message Controls**: Right-click context menu to edit or delete your own messages. Editing is disabled once the recipient has read the message.
 - **Audio & Video Calls**: Built-in peer-to-peer 1-on-1 and group calls using WebRTC. No third-party video API required.
-- **WhatsApp-style UI**: A clean, responsive interface featuring dynamic animations, typing indicators, and read receipts.
+- **WhatsApp-style UI**: A clean, responsive interface featuring dynamic animations, typing indicators, and blue double-tick read receipts.
 - **Call Logging**: In-chat system messages track when calls are started, missed, or ended.
 - **Zero Friction**: Join simply by picking a username/room code. No complex signup flows.
 

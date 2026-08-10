@@ -8,6 +8,8 @@ interface UseSocketProps {
   onUserStatusChange: (users: string[]) => void;
   onTypingUpdate: (typingData: { username: string; isTyping: boolean }) => void;
   onMessageReadUpdate: (messageId: string) => void;
+  onMessageEdited?: (data: { messageId: string; newMessage: string }) => void;
+  onMessageDeleted?: (messageId: string) => void;
 }
 
 export const useSocket = ({ 
@@ -15,7 +17,9 @@ export const useSocket = ({
   onMessageReceived, 
   onUserStatusChange, 
   onTypingUpdate,
-  onMessageReadUpdate
+  onMessageReadUpdate,
+  onMessageEdited,
+  onMessageDeleted
 }: UseSocketProps) => {
   const [isConnected, setIsConnected] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
@@ -57,6 +61,14 @@ export const useSocket = ({
       onMessageReadUpdate(messageId);
     };
 
+    const onMessageEditedEvent = (data: { messageId: string; newMessage: string }) => {
+      if (onMessageEdited) onMessageEdited(data);
+    };
+
+    const onMessageDeletedEvent = (messageId: string) => {
+      if (onMessageDeleted) onMessageDeleted(messageId);
+    };
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('connect_error', onConnectError);
@@ -64,6 +76,8 @@ export const useSocket = ({
     socket.on('user:online', onUserOnline);
     socket.on('typing:update', onTypingUpdateEvent);
     socket.on('message:read', onMessageRead);
+    socket.on('message:edited', onMessageEditedEvent);
+    socket.on('message:deleted', onMessageDeletedEvent);
 
     return () => {
       socket.emit('user:leave');
@@ -74,9 +88,11 @@ export const useSocket = ({
       socket.off('user:online', onUserOnline);
       socket.off('typing:update', onTypingUpdateEvent);
       socket.off('message:read', onMessageRead);
+      socket.off('message:edited', onMessageEditedEvent);
+      socket.off('message:deleted', onMessageDeletedEvent);
       socket.disconnect();
     };
-  }, [username, onMessageReceived, onUserStatusChange, onTypingUpdate, onMessageReadUpdate]);
+  }, [username, onMessageReceived, onUserStatusChange, onTypingUpdate, onMessageReadUpdate, onMessageEdited, onMessageDeleted]);
 
   const sendSocketMessage = useCallback((message: string) => {
     if (username && isConnected) {
@@ -102,12 +118,26 @@ export const useSocket = ({
     }
   }, [isConnected]);
 
+  const sendEditMessage = useCallback((messageId: string, newMessage: string) => {
+    if (isConnected) {
+      socket.emit('message:edit', { messageId, newMessage });
+    }
+  }, [isConnected]);
+
+  const sendDeleteMessage = useCallback((messageId: string) => {
+    if (isConnected) {
+      socket.emit('message:delete', messageId);
+    }
+  }, [isConnected]);
+
   return { 
     isConnected, 
     connectionError, 
     sendSocketMessage, 
     sendTypingStart, 
     sendTypingStop,
-    sendReadStatus
+    sendReadStatus,
+    sendEditMessage,
+    sendDeleteMessage
   };
 };

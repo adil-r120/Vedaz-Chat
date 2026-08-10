@@ -57,13 +57,23 @@ export const Chat: React.FC<ChatProps> = ({ username, onLogout }) => {
     setMessages(prev => prev.map(m => m._id === id ? { ...m, status: 'read' } : m));
   }, []);
 
-  const { isConnected, sendSocketMessage, sendTypingStart, sendTypingStop, sendReadStatus } =
+  const handleMessageEdited = useCallback((data: { messageId: string; newMessage: string }) => {
+    setMessages(prev => prev.map(m => m._id === data.messageId ? { ...m, message: data.newMessage } : m));
+  }, []);
+
+  const handleMessageDeleted = useCallback((messageId: string) => {
+    setMessages(prev => prev.filter(m => m._id !== messageId));
+  }, []);
+
+  const { isConnected, sendSocketMessage, sendTypingStart, sendTypingStop, sendReadStatus, sendEditMessage, sendDeleteMessage } =
     useSocket({
       username,
       onMessageReceived: handleMessageReceived,
       onUserStatusChange: setOnlineUsers,
       onTypingUpdate: handleTypingUpdate,
       onMessageReadUpdate: handleReadUpdate,
+      onMessageEdited: handleMessageEdited,
+      onMessageDeleted: handleMessageDeleted,
     });
 
   /* ── Calling ──────────────────────────────────────────────────────────── */
@@ -153,6 +163,8 @@ export const Chat: React.FC<ChatProps> = ({ username, onLogout }) => {
                     isOwnMessage={msg.username === username}
                     isSequential={!!(i > 0 && messages[i - 1].username === msg.username)}
                     onRead={sendReadStatus}
+                    onEdit={sendEditMessage}
+                    onDelete={sendDeleteMessage}
                   />
                 ))}
               </div>
