@@ -1,5 +1,30 @@
 import { Server, Socket } from 'socket.io';
+import xss from 'xss';
 import { Message } from '../models/Message';
+
+// --- Simple In-Memory Rate Limiter ---
+const rateLimits = new Map<string, { count: number; lastReset: number }>();
+const RATE_LIMIT_WINDOW_MS = 1000;
+const MAX_MESSAGES_PER_WINDOW = 5;
+
+function checkRateLimit(socketId: string): boolean {
+  const now = Date.now();
+  let record = rateLimits.get(socketId);
+  if (!record) {
+    record = { count: 0, lastReset: now };
+    rateLimits.set(socketId, record);
+  }
+  if (now - record.lastReset > RATE_LIMIT_WINDOW_MS) {
+    record.count = 1;
+    record.lastReset = now;
+    return true;
+  }
+  if (record.count >= MAX_MESSAGES_PER_WINDOW) {
+    return false; // Rate limit exceeded
+  }
+  record.count++;
+  return true;
+}
 
 const onlineUsers = new Map<string, string>(); // socketId -> username
 const activeCalls = new Map<string, string>(); // 1-on-1 calls: username -> partnerUsername
@@ -26,10 +51,15 @@ export const setupSocketHandlers = (io: Server) => {
 
     // ── Chat: Send message ───────────────────────────────────────────────────
     socket.on('message:send', async (data: { username: string; message: string; type?: 'text' | 'call' }) => {
+      if (!checkRateLimit(socket.id)) {
+        socket.emit('socket:error', 'You are sending messages too fast. Please slow down.');
+        return;
+      }
       try {
+        const sanitizedMessage = xss(data.message.trim());
         const newMessage = await Message.create({
           username: data.username.trim(),
-          message: data.message.trim(),
+          message: sanitizedMessage,
           status: 'sent',
           type: data.type || 'text',
         });
@@ -75,14 +105,19 @@ export const setupSocketHandlers = (io: Server) => {
 
     // ── Chat: Edit message ───────────────────────────────────────────────────
     socket.on('message:edit', async (data: { messageId: string; newMessage: string }) => {
+      if (!checkRateLimit(socket.id)) {
+        socket.emit('socket:error', 'You are editing messages too fast. Please slow down.');
+        return;
+      }
       try {
+        const sanitizedMessage = xss(data.newMessage);
         const updatedMsg = await Message.findByIdAndUpdate(
           data.messageId, 
-          { message: data.newMessage },
+          { message: sanitizedMessage },
           { new: true }
         );
         if (updatedMsg) {
-          io.emit('message:edited', { messageId: data.messageId, newMessage: data.newMessage });
+          io.emit('message:edited', { messageId: data.messageId, newMessage: sanitizedMessage });
         }
       } catch (error) {
         console.error('Error editing message');
@@ -104,6 +139,10 @@ export const setupSocketHandlers = (io: Server) => {
     // ═════════════════════════════════════════════════════════════════════════
 
     socket.on('call:initiate', (data: { to: string; from: string; callType: 'audio' | 'video' }) => {
+      if (!checkRateLimit(socket.id)) {
+        socket.emit('call:error', { message: 'Too many requests. Please try again later.' });
+        return;
+      }
       const { to, from, callType } = data;
       const targetSocketId = getSocketId(to);
       if (!targetSocketId) {
