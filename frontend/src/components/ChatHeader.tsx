@@ -1,6 +1,7 @@
 import React from 'react';
-import { LogOut, Phone, Video } from 'lucide-react';
+import { LogOut, Phone, Video, Sun, Moon } from 'lucide-react';
 import type { CallType } from '../types/call';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface ChatHeaderProps {
   username: string;
@@ -50,24 +51,22 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
 }) => {
   const others = onlineUsers.filter((u) => u !== username);
   const isInCall = callState !== 'idle';
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <div
-      /* grid-based header: never clips, never collapses */
-      style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', gap: '12px', padding: '10px 20px', background: '#fff', borderBottom: '1px solid #e5e7eb', boxShadow: '0 1px 4px rgba(0,0,0,.06)', position: 'relative', zIndex: 40, flexShrink: 0 }}
-    >
-
+    <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 px-5 py-2.5 bg-white dark:bg-wa-panel border-b border-gray-200 dark:border-wa-border shadow-[0_1px_4px_rgba(0,0,0,0.06)] relative z-40 shrink-0 transition-colors">
+      
       {/* ── Col 1: Logo + name ─────────────────────────────────────────────── */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+      <div className="flex items-center gap-2.5 min-w-0">
         <VedazLogo />
-        <div className="hidden sm:block" style={{ minWidth: 0 }}>
-          <p style={{ margin: 0, fontWeight: 800, fontSize: '16px', color: '#111827', lineHeight: 1.2 }}>Vedaz Chat</p>
-          <p style={{ margin: 0, fontSize: '11px', color: '#9ca3af', lineHeight: 1.2 }}>Let's Talk</p>
+        <div className="hidden sm:block min-w-0">
+          <p className="m-0 font-extrabold text-[16px] text-gray-900 dark:text-wa-text leading-[1.2]">Vedaz Chat</p>
+          <p className="m-0 text-[11px] text-gray-400 dark:text-wa-text-muted leading-[1.2]">Let's Talk</p>
         </div>
       </div>
 
       {/* ── Col 2: Call buttons (WhatsApp style) ───────────────────────────── */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px', paddingRight: '16px' }}>
+      <div className="flex justify-end items-center gap-3 pr-4">
         <button
           onClick={() => {
             if (others.length === 1) onStartCall(others[0], 'audio');
@@ -75,16 +74,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
           }}
           disabled={isInCall}
           title="Voice Call"
-          style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            width: '38px', height: '38px', borderRadius: '50%',
-            background: 'transparent', border: 'none',
-            color: isInCall ? '#d1d5db' : '#4f46e5',
-            cursor: isInCall ? 'not-allowed' : 'pointer',
-            transition: 'background 0.2s',
-          }}
-          onMouseEnter={e => { if (!isInCall) (e.currentTarget as HTMLElement).style.background = '#f3f4f6'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+          className={`flex items-center justify-center w-[38px] h-[38px] rounded-full transition-colors ${isInCall ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed' : 'text-indigo-600 dark:text-[#00a884] hover:bg-gray-100 dark:hover:bg-wa-input cursor-pointer'}`}
         >
           <Phone size={20} />
         </button>
@@ -96,32 +86,31 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
           }}
           disabled={isInCall}
           title="Video Call"
-          style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            width: '38px', height: '38px', borderRadius: '50%',
-            background: 'transparent', border: 'none',
-            color: isInCall ? '#d1d5db' : '#4f46e5',
-            cursor: isInCall ? 'not-allowed' : 'pointer',
-            transition: 'background 0.2s',
-          }}
-          onMouseEnter={e => { if (!isInCall) (e.currentTarget as HTMLElement).style.background = '#f3f4f6'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+          className={`flex items-center justify-center w-[38px] h-[38px] rounded-full transition-colors ${isInCall ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed' : 'text-indigo-600 dark:text-[#00a884] hover:bg-gray-100 dark:hover:bg-wa-input cursor-pointer'}`}
         >
           <Video size={22} />
         </button>
       </div>
 
-      {/* ── Col 3: Profile + Leave ─────────────────────────────────────────── */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+      {/* ── Col 3: Profile + Leave + Theme ─────────────────────────────────────────── */}
+      <div className="flex items-center gap-2 shrink-0">
+        <button
+          onClick={toggleTheme}
+          title="Toggle Theme"
+          className="flex items-center justify-center w-8 h-8 rounded-full text-gray-500 hover:bg-gray-100 dark:text-wa-text-muted dark:hover:bg-wa-input transition-colors"
+        >
+          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
+
         {/* Avatar pill */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '7px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '5px 10px' }}>
-          <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg,#4f46e5,#2563eb)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: '12px', flexShrink: 0 }}>
+        <div className="flex items-center gap-[7px] bg-gray-50 dark:bg-wa-input border border-gray-200 dark:border-wa-border rounded-[10px] py-[5px] px-[10px] transition-colors">
+          <div className="w-[28px] h-[28px] rounded-full bg-gradient-to-br from-indigo-600 to-blue-600 flex items-center justify-center text-white font-bold text-[12px] shrink-0">
             {username.charAt(0).toUpperCase()}
           </div>
-          <div className="hidden md:block" style={{ lineHeight: 1.3 }}>
-            <p style={{ margin: 0, fontSize: '12px', fontWeight: 700, color: '#111827', maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{username}</p>
-            <p style={{ margin: 0, fontSize: '10px', color: isConnected ? '#10b981' : '#ef4444', display: 'flex', alignItems: 'center', gap: 3 }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: isConnected ? '#10b981' : '#ef4444', display: 'inline-block', animation: isConnected ? 'pulse 2s infinite' : 'none' }} />
+          <div className="hidden md:block leading-[1.3]">
+            <p className="m-0 text-[12px] font-bold text-gray-900 dark:text-wa-text max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap">{username}</p>
+            <p className="m-0 text-[10px] flex items-center gap-[3px]" style={{ color: isConnected ? '#10b981' : '#ef4444' }}>
+              <span className="inline-block w-[6px] h-[6px] rounded-full" style={{ background: isConnected ? '#10b981' : '#ef4444', animation: isConnected ? 'pulse 2s infinite' : 'none' }} />
               {isConnected ? 'Online' : 'Offline'}
             </p>
           </div>
@@ -131,9 +120,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
         <button
           onClick={onLogout}
           title="Leave chat"
-          style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '7px 12px', borderRadius: '10px', border: 'none', cursor: 'pointer', background: 'transparent', color: '#6b7280', fontWeight: 600, fontSize: '13px', transition: 'all .15s' }}
-          onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = '#fef2f2'; el.style.color = '#dc2626'; }}
-          onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'transparent'; el.style.color = '#6b7280'; }}
+          className="flex items-center gap-[5px] py-[7px] px-[12px] rounded-[10px] font-semibold text-[13px] transition-all text-gray-500 hover:bg-red-50 hover:text-red-600 dark:text-wa-text-muted dark:hover:bg-red-900/30 dark:hover:text-red-400"
         >
           <LogOut size={16} />
           <span className="hidden sm:inline">Leave</span>

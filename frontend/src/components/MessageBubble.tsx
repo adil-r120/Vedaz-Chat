@@ -74,7 +74,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   if (message.type === 'call') {
     return (
       <div className="flex justify-center w-full my-3" ref={messageRef}>
-        <div className="bg-gray-100/80 text-gray-600 text-[11px] font-medium px-4 py-1.5 rounded-full border border-gray-200/50 shadow-sm flex items-center gap-2">
+        <div className="bg-gray-100/80 dark:bg-wa-input text-gray-600 dark:text-wa-text-muted text-[11px] font-medium px-4 py-1.5 rounded-full border border-gray-200/50 dark:border-wa-border shadow-sm flex items-center gap-2 transition-colors">
           <span>{message.message}</span>
           <span className="text-gray-400 text-[9px] ml-1">{timeString}</span>
         </div>
@@ -91,7 +91,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
         className={`flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'} ${isSequential ? 'mt-1' : 'mt-4'}`}
       >
         {!isOwnMessage && !isSequential && (
-          <span className="text-xs font-semibold text-gray-500 mb-1 ml-1">{message.username}</span>
+          <span className="text-xs font-semibold text-gray-500 dark:text-[#00a884] mb-1 ml-1">{message.username}</span>
         )}
         
         <div 
@@ -99,11 +99,11 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           className={`
           relative max-w-[75%] px-4 py-2.5 shadow-sm group
           ${isOwnMessage 
-            ? 'bg-gradient-to-br from-indigo-500 to-blue-600 text-white' 
-            : 'bg-white text-gray-800 border border-gray-100'}
+            ? 'bg-gradient-to-br from-indigo-500 to-blue-600 dark:from-wa-bubble-out dark:to-wa-bubble-out text-white dark:text-wa-text' 
+            : 'bg-white dark:bg-wa-bubble-in text-gray-800 dark:text-wa-text border border-gray-100 dark:border-transparent transition-colors'}
           ${isOwnMessage
-            ? `rounded-l-2xl ${isSequential ? 'rounded-r-md' : 'rounded-tr-2xl rounded-br-sm'}`
-            : `rounded-r-2xl ${isSequential ? 'rounded-l-md' : 'rounded-tl-2xl rounded-bl-sm'}`}
+            ? `rounded-l-xl ${isSequential ? 'rounded-r-sm' : 'rounded-tr-xl rounded-br-sm'}`
+            : `rounded-r-xl ${isSequential ? 'rounded-l-sm' : 'rounded-tl-xl rounded-bl-sm'}`}
         `}>
           {isEditing ? (
             <form onSubmit={handleEditSubmit} className="flex items-center gap-2">
@@ -143,13 +143,13 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
     
     {contextMenu && (
       <div 
-        className="fixed z-50 bg-white rounded-lg shadow-xl border border-gray-100 py-1 min-w-[120px]"
+        className="fixed z-50 bg-white dark:bg-wa-input rounded-lg shadow-xl border border-gray-100 dark:border-wa-border py-1 min-w-[120px] transition-colors"
         style={{ top: contextMenu.y, left: contextMenu.x }}
         onClick={(e) => e.stopPropagation()}
       >
         {canEdit && (
           <button 
-            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+            className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-wa-text hover:bg-gray-50 dark:hover:bg-wa-panel flex items-center gap-2 transition-colors"
             onClick={() => {
               setIsEditing(true);
               setContextMenu(null);
@@ -160,7 +160,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           </button>
         )}
         <button 
-          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+          className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-wa-panel flex items-center gap-2 transition-colors"
           onClick={() => {
             onDelete?.(message._id);
             setContextMenu(null);

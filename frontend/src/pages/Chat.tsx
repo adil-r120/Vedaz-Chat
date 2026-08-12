@@ -11,6 +11,7 @@ import { useCall } from '../hooks/useCall';
 import type { IMessage } from '../types/message';
 import { getMessages } from '../services/api';
 import { MessagesSquare } from 'lucide-react';
+import { VedazLogo } from '../components/VedazLogo';
 
 interface ChatProps {
   username: string;
@@ -109,17 +110,7 @@ export const Chat: React.FC<ChatProps> = ({ username, onLogout }) => {
    */
   return (
     <>
-      <div
-        style={{
-          width: '100vw',
-          height: '100dvh',
-          display: 'grid',
-          gridTemplateRows: 'auto 1fr',
-          gridTemplateColumns: '1fr auto',
-          overflow: 'hidden',
-          background: '#f8fafc',
-        }}
-      >
+      <div className="w-screen h-[100dvh] grid grid-rows-[auto_1fr] grid-cols-[1fr_auto] overflow-hidden bg-slate-50 dark:bg-wa-bg transition-colors">
         {/* ── Row 1, spans all columns: Header ───────────────────────────── */}
         <div style={{ gridColumn: '1 / -1', gridRow: '1' }}>
           <ChatHeader
@@ -134,19 +125,9 @@ export const Chat: React.FC<ChatProps> = ({ username, onLogout }) => {
         </div>
 
         {/* ── Row 2, Col 1: Messages + Input ─────────────────────────────── */}
-        <div
-          style={{
-            gridColumn: '1',
-            gridRow: '2',
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: 0,
-            minWidth: 0,
-            background: 'linear-gradient(180deg,#f8fafc 0%,#ffffff 100%)',
-          }}
-        >
+        <div className="relative col-start-1 row-start-2 flex flex-col min-h-0 min-w-0 bg-gradient-to-b from-slate-50 to-white dark:from-wa-bg dark:to-wa-bg transition-colors">
           {/* Scrollable messages */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
+          <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px', position: 'relative', zIndex: 1 }}>
             {messages.length === 0 ? (
               <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, color: '#9ca3af' }}>
                 <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#eef2ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

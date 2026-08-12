@@ -1,31 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ArrowRight } from 'lucide-react';
 
-/* ── Inline SVG logo ──────────────────────────────────────────────────────── */
-const VedazLogo = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="80" height="80" aria-hidden="true" className="drop-shadow-xl transform -rotate-3 hover:rotate-0 transition-transform duration-300">
-    <defs>
-      <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#4f46e5" />
-        <stop offset="50%" stopColor="#6366f1" />
-        <stop offset="100%" stopColor="#2563eb" />
-      </linearGradient>
-      <radialGradient id="rg1" cx="35%" cy="25%" r="60%">
-        <stop offset="0%" stopColor="#fff" stopOpacity="0.28" />
-        <stop offset="100%" stopColor="#fff" stopOpacity="0" />
-      </radialGradient>
-      <filter id="ds1"><feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#3730a3" floodOpacity="0.35" /></filter>
-    </defs>
-    <rect width="64" height="64" rx="15" fill="url(#lg1)" />
-    <rect width="64" height="64" rx="15" fill="url(#rg1)" />
-    <path d="M10 13C10 9.7 12.7 7 16 7h26c3.3 0 6 2.7 6 6v18c0 3.3-2.7 6-6 6H26L18 46V37c-3.3 0-6-2.7-6-6V13z" fill="#fff" opacity=".96" filter="url(#ds1)" />
-    <path d="M33 41c0-1.7 1.3-3 3-3h14c1.7 0 3 1.3 3 3v9c0 1.7-1.3 3-3 3H40l-4 4v-4c-1.7 0-3-1.3-3-3v-9z" fill="#fff" opacity=".3" />
-    <circle cx="22" cy="22" r="3" fill="url(#lg1)" />
-    <circle cx="30" cy="22" r="3" fill="url(#lg1)" />
-    <circle cx="38" cy="22" r="3" fill="url(#lg1)" />
-    <rect x="8" y="8" width="48" height="7" rx="7" fill="#fff" opacity=".07" />
-  </svg>
-);
+import { VedazLogo } from '../components/VedazLogo';
 
 interface LoginProps {
   onLogin: (username: string) => void;
@@ -34,6 +10,22 @@ interface LoginProps {
 export const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const { left, top, width, height } = containerRef.current.getBoundingClientRect();
+    const x = (e.clientX - left - width / 2) / (width / 2);
+    const y = (e.clientY - top - height / 2) / (height / 2);
+    
+    // Tilt angle max 10 degrees
+    setTilt({ x: -y * 10, y: x * 10 });
+  };
+
+  const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0 });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,56 +37,76 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center p-4 relative overflow-hidden">
-      {/* Animated Background Blobs */}
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-float" style={{ animationDelay: '0s' }}></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
+    <div 
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="min-h-screen flex flex-col justify-center items-center p-4 relative overflow-hidden bg-slate-50 dark:bg-wa-bg transition-colors"
+      style={{ perspective: '1200px' }}
+    >
+
+      {/* Dynamic Fluid Gradient Mesh Background */}
+      <div className="absolute inset-0 overflow-hidden w-full h-full pointer-events-none">
+        <div className="absolute top-[0%] -left-[10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] bg-indigo-500/40 dark:bg-[#00a884]/30 rounded-full mix-blend-multiply dark:mix-blend-lighten filter blur-[80px] animate-blob"></div>
+        <div className="absolute top-[0%] -right-[10%] w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] bg-purple-400/40 dark:bg-indigo-600/30 rounded-full mix-blend-multiply dark:mix-blend-lighten filter blur-[100px] animate-blob" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute -bottom-[20%] -left-[10%] w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] bg-blue-400/40 dark:bg-emerald-600/20 rounded-full mix-blend-multiply dark:mix-blend-lighten filter blur-[100px] animate-blob" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute -bottom-[20%] -right-[10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] bg-pink-400/30 dark:bg-blue-600/20 rounded-full mix-blend-multiply dark:mix-blend-lighten filter blur-[80px] animate-blob" style={{ animationDelay: '6s' }}></div>
+      </div>
       
-      <div className="max-w-md w-full bg-white/60 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-white/50 overflow-hidden animate-fade-in-up">
-        <div className="p-10 text-center relative">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600/10 to-indigo-600/10 pointer-events-none"></div>
-          
-          <div className="mx-auto flex justify-center mb-6">
-            <VedazLogo />
-          </div>
-          
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">Vedaz Chat</h1>
-          <p className="text-gray-500 flex items-center justify-center gap-2">
-            Let's Discuss as a Team
-          </p>
-        </div>
-        
-        <div className="p-10 pt-4">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-2 ml-1">
-                Create your Chatroom Name
-              </label>
-              <div className="relative">
-                <input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={(e) => {
-                    setUsername(e.target.value);
-                    if (error) setError('');
-                  }}
-                  className={`w-full pl-5 pr-4 py-4 rounded-2xl border-2 ${
-                    error ? 'border-red-400 focus:ring-red-500' : 'border-white/50 focus:border-blue-500/50'
-                  } bg-white/80 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all text-gray-900 placeholder-gray-400 shadow-sm`}
-                  placeholder="e.g. Adil / 123..."
-                />
-              </div>
-              {error && <p className="mt-2 text-sm text-red-500 ml-1 font-medium">{error}</p>}
+      <div 
+        style={{
+          transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+          transformStyle: 'preserve-3d',
+          transition: 'transform 0.1s ease-out'
+        }}
+        className="relative z-10 w-full max-w-md"
+      >
+        <div className="w-full bg-white/60 dark:bg-wa-panel/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 dark:border-wa-border/50 overflow-hidden animate-fade-in-up transition-colors">
+          <div className="p-10 text-center relative">
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600/10 to-indigo-600/10 pointer-events-none"></div>
+            
+            <div className="mx-auto flex justify-center mb-6">
+              <VedazLogo />
             </div>
             
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl py-4 font-bold flex items-center justify-center gap-2 hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl hover:shadow-blue-500/20 active:scale-[0.98] transition-all"
-            >
-              Enter Chat <ArrowRight size={20} className="ml-1 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </form>
+            <h1 className="text-3xl font-extrabold text-gray-900 dark:text-wa-text tracking-tight mb-2">Vedaz Chat</h1>
+            <p className="text-gray-500 dark:text-wa-text-muted flex items-center justify-center gap-2">
+              Let's Discuss as a Team
+            </p>
+          </div>
+          
+          <div className="p-10 pt-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="username" className="block text-sm font-semibold text-gray-700 dark:text-wa-text mb-2 ml-1">
+                  Create your Chatroom Name
+                </label>
+                <div className="relative">
+                  <input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                      if (error) setError('');
+                    }}
+                    className={`w-full pl-5 pr-4 py-4 rounded-xl border-2 ${
+                      error ? 'border-red-400 focus:ring-red-500' : 'border-white/50 dark:border-wa-border focus:border-blue-500/50 dark:focus:border-[#00a884]'
+                    } bg-white/80 dark:bg-wa-input/80 focus:bg-white dark:focus:bg-wa-input focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-[#00a884]/20 transition-all text-gray-900 dark:text-wa-text placeholder-gray-400 dark:placeholder-wa-text-muted shadow-sm`}
+                    placeholder="e.g. Adil / 123..."
+                  />
+                </div>
+                {error && <p className="mt-2 text-sm text-red-500 ml-1 font-medium">{error}</p>}
+              </div>
+              
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-[#00a884] dark:to-[#008f6f] text-white rounded-xl py-4 font-bold flex items-center justify-center gap-2 hover:from-blue-700 hover:to-indigo-700 dark:hover:from-[#008f6f] dark:hover:to-[#00705a] hover:shadow-xl hover:shadow-blue-500/20 active:scale-[0.98] transition-all"
+              >
+                Enter Chat <ArrowRight size={20} className="ml-1 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
