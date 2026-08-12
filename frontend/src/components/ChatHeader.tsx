@@ -1,5 +1,5 @@
 import React from 'react';
-import { LogOut, Phone, Video, Sun, Moon } from 'lucide-react';
+import { LogOut, Phone, Video, Sun, Moon, Users } from 'lucide-react';
 import type { CallType } from '../types/call';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -11,6 +11,7 @@ interface ChatHeaderProps {
   callState: string;
   onStartCall: (targetUser: string, type: CallType) => void;
   onJoinGroupCall: (type: CallType) => void;
+  onToggleUsers?: () => void;
 }
 
 /* ── Inline SVG logo ──────────────────────────────────────────────────────── */
@@ -48,6 +49,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
   callState,
   onStartCall,
   onJoinGroupCall,
+  onToggleUsers,
 }) => {
   const others = onlineUsers.filter((u) => u !== username);
   const isInCall = callState !== 'idle';
@@ -100,6 +102,15 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
           className="flex items-center justify-center w-8 h-8 rounded-full text-gray-500 hover:bg-gray-100 dark:text-wa-text-muted dark:hover:bg-wa-input transition-colors"
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
+
+        {/* Mobile Users Toggle */}
+        <button
+          onClick={onToggleUsers}
+          title="Online Users"
+          className="lg:hidden flex items-center justify-center w-8 h-8 rounded-full text-gray-500 hover:bg-gray-100 dark:text-wa-text-muted dark:hover:bg-wa-input transition-colors"
+        >
+          <Users size={18} />
         </button>
 
         {/* Avatar pill */}
